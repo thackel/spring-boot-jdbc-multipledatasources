@@ -9,8 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-import com.zaxxer.hikari.HikariDataSource;
-
 @SpringBootApplication
 public class DemoApplication {
 
@@ -22,12 +20,12 @@ public class DemoApplication {
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource")
 	public DataSource primaryDataSource(DataSourceProperties properties) {
-		return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+		return properties.initializeDataSourceBuilder().build();
 	}
 
 	@Bean("second")
 	@ConfigurationProperties(prefix = "second")
 	public DataSource secondaryDataSource(DataSourceProperties properties) {
-		return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+		return properties.initializeDataSourceBuilder().build();
 	}
 }
