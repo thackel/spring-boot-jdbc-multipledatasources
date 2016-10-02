@@ -16,16 +16,29 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
+	@Bean
+	@Primary
+	@ConfigurationProperties("first")
+	public DataSourceProperties primaryDataSourceProperties() {
+		return new DataSourceProperties();
+	}
+
 	@Primary
 	@Bean
-	@ConfigurationProperties(prefix = "spring.datasource")
-	public DataSource primaryDataSource(DataSourceProperties properties) {
-		return properties.initializeDataSourceBuilder().build();
+	@ConfigurationProperties(prefix = "first")
+	public DataSource primaryDataSource() {
+		return primaryDataSourceProperties().initializeDataSourceBuilder().build();
+	}
+
+	@Bean
+	@ConfigurationProperties("second")
+	public DataSourceProperties secondaryDataSourceProperties() {
+		return new DataSourceProperties();
 	}
 
 	@Bean("second")
 	@ConfigurationProperties(prefix = "second")
-	public DataSource secondaryDataSource(DataSourceProperties properties) {
-		return properties.initializeDataSourceBuilder().build();
+	public DataSource secondaryDataSource() {
+		return secondaryDataSourceProperties().initializeDataSourceBuilder().build();
 	}
 }
