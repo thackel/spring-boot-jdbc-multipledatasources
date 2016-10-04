@@ -1,6 +1,6 @@
 package com.example;
 
-import javax.sql.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,16 +16,31 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
+	@Bean
+	@Primary
+	@ConfigurationProperties("first")
+	public DataSourceProperties primaryDataSourceProperties() {
+		return new DataSourceProperties();
+	}
+
 	@Primary
 	@Bean
-	@ConfigurationProperties(prefix = "spring.datasource")
-	public DataSource primaryDataSource(DataSourceProperties properties) {
-		return properties.initializeDataSourceBuilder().build();
+	@ConfigurationProperties(prefix = "first")
+	public HikariDataSource primaryDataSource() {
+		return (HikariDataSource) primaryDataSourceProperties().initializeDataSourceBuilder()
+				.type(HikariDataSource.class).build();
+	}
+
+	@Bean
+	@ConfigurationProperties("second")
+	public DataSourceProperties secondaryDataSourceProperties() {
+		return new DataSourceProperties();
 	}
 
 	@Bean("second")
 	@ConfigurationProperties(prefix = "second")
-	public DataSource secondaryDataSource(DataSourceProperties properties) {
-		return properties.initializeDataSourceBuilder().build();
+	public HikariDataSource secondaryDataSource() {
+		return (HikariDataSource) secondaryDataSourceProperties().initializeDataSourceBuilder()
+				.type(HikariDataSource.class).build();
 	}
 }
